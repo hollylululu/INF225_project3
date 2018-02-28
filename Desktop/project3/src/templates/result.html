@@ -1,0 +1,11 @@
+
+<form action="search">
+  <input name="q" value="{{q}}">
+  <input type="submit">
+</form>
+
+<ul>
+  {% for filename, score in results %}
+    <li>{{score|round(1)}} - {{filename}}</li>
+  {% endfor %}
+</ul>
