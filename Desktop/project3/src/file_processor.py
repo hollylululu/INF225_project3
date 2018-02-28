@@ -1,18 +1,19 @@
 
 class file_processor:
 
-	def __init__ (self, filePath):
+	def __init__ (self, filePath, docID, outFile):
 		self.pos_inverted_index = {}
-		self.docID = filePath.split('/')[-2] + '/' + filePath.split('/')[-1]
+		self.docID = docID
 		self.filePath = filePath
 		self.title = ''
 		self.body = ''
 		self.filePath = filePath
-
+		self.outFile = outFile
 
 	def split_body_title (self):
+		import io
 		res_str = ''
-		with open(self.filePath, 'rt') as fin:
+		with open(self.filePath, 'r') as fin:
 			res_str = fin.read()
 
 		#some documents missing <body> tags. 
@@ -35,6 +36,11 @@ class file_processor:
 		import string
 		from tokenize import tokenize
 		from nltk.tokenize import WhitespaceTokenizer
+		from nltk.corpus import stopwords
+		#from nltk.stem.porter import *
+
+		stop_words = set(stopwords.words('english')) 
+		#stemmer = PorterStemmer()
 		#import collections
 		#from collections import OrderedDict
 		#from collections import Counter
@@ -46,6 +52,10 @@ class file_processor:
 		outStr = inStr.replace("'","")
 		outStr = outStr.translate(translator).lower()
 		tempStr = outStr.split()
+		#tempStr = [w for w in tempStr if not w in stop_words]
+
+		#tempStr = [stemmer.stem(plural) for plural in tempStr]
+
 
 		word_pos_list = list(enumerate(tempStr))
 		#tokens = nltk.word_tokenize(outStr)
@@ -66,11 +76,12 @@ class file_processor:
 				self.pos_inverted_index[tup[1]][self.docID].append(tup[0])
 		return self.pos_inverted_index
 
-
-		
-
-
-
+	def write_dict (self, index_dict):
+		with open(self.outFile, 'w') as fout:
+			for key in index_dict:
+				fout.write(key + ': ')
+				fout.write(str(index_dict[key]))
+				fout.write('\n') 
 
 import argparse
 
@@ -80,13 +91,16 @@ def main():
 	parser.add_argument('-o', '--output_file', type=str, help='Name of output file for the index table')
 	args = parser.parse_args()
 
-	tester = file_processor(args.input_file)
+	tester = file_processor(args.input_file, '0/6', args.output_file)
 	title, body = tester.split_body_title()
 	tokens = tester.tokenizer(body)
+	index_dict = tester.aggregate_pos_list(tokens)
+	tester.write_dict(index_dict)
+
 	#print tokens
 	#print tester.computeWordFrequencies(tokens)
 
-	print tester.aggregate_pos_list(tokens)
+	#print tester.aggregate_pos_list(tokens)
 
 if __name__ == "__main__":
     main()
