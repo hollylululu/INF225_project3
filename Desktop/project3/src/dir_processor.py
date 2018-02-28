@@ -14,17 +14,21 @@ class dir_processor:
 		for root, dirs, files in os.walk(self.inDir):
 			fileList = files
 		for file in fileList:
-			docID = ('/').join([self.dirID, file])
-			fileProcessor = file_processor(root + file, docID)
+			docID = ('_').join([self.dirID, file])
+			fileProcessor = file_processor(root + file, docID, '/Users/luhe/Desktop/test/' + docID +'.txt')
 			title, body = fileProcessor.split_body_title()
 			tokens = fileProcessor.tokenizer(body)
+
 			#self.inDir_inverted_index.update
 			doc_dict = fileProcessor.aggregate_pos_list(tokens)
+			fileProcessor.write_dict(doc_dict)
 			for term in doc_dict:
 				if term not in self.inDir_inverted_index:
 					self.inDir_inverted_index[term] = doc_dict[term]
 				else:
-					self.inDir_inverted_index.update(doc_dict[term]) 
+					self.inDir_inverted_index[term].update(doc_dict[term]) 
+
+
 
 
 
