@@ -3,12 +3,14 @@ class file_processor:
 
 	def __init__ (self, filePath):
 		self.pos_inverted_index = {}
-		#self.docID = 
+		self.docID = filePath.split('/')[-2] + '/' + filePath.split('/')[-1]
 		self.filePath = filePath
 		self.title = ''
 		self.body = ''
 		self.filePath = filePath
 
+	def printer (self):
+		print self.docID
 
 	def split_body_title (self):
 		res_str = ''
@@ -27,18 +29,15 @@ class file_processor:
 
 		return self.title, self.body
 
-"""return list of tuples: [(pos, word1), (pos, word2), (pos, word1), (pos, word3).....]
-
-"""
-
+#return list of tuples: [(pos, word1), (pos, word2), (pos, word1), (pos, word3).....]
 	def tokenizer(self, inStr):
 		import nltk
 		import string
 		from tokenize import tokenize
 		from nltk.tokenize import WhitespaceTokenizer
-		import collections
-		from collections import OrderedDict
-		from collections import Counter
+		#import collections
+		#from collections import OrderedDict
+		#from collections import Counter
 
 		res_tokens = []
 		freq_dict = {}
@@ -54,13 +53,13 @@ class file_processor:
 		return word_pos_list
 
 
-"""return dictonary: {term1: [pos1, pos2],term2: [pos1, pos2, pos3, ..., posN] }
+#return dictonary: {term1: {docID: [pos1, pos2]}, term2: {docID: [pos1, pos2, pos3, ..., posN]} .... termN: {docID: [pos1, pos2... posN]} }
+#docIDs will be the same. This is for the ease of merging with other docs.
 
-"""
 	def aggregate_pos_list (self, counter_list):
 		for tup in counter_list:
 			if tup[1] not in self.pos_inverted_index:
-				self.pos_inverted_index[tup[1]] = [tup[0]]
+				self.pos_inverted_index[tup[1]] = [{self.docID: [tup[0]]
 			else:
 				self.pos_inverted_index[tup[1]].append(tup[0])
 		return self.pos_inverted_index
@@ -89,12 +88,13 @@ def main():
 	args = parser.parse_args()
 
 	tester = file_processor(args.input_file)
-	title, body = tester.split_body_title()
-	tokens = tester.tokenizer(body)
+	tester.printer()
+	#title, body = tester.split_body_title()
+	#tokens = tester.tokenizer(body)
 	#print tokens
 	#print tester.computeWordFrequencies(tokens)
 
-	print tester.aggregate_pos_list(tokens)
+	#print tester.aggregate_pos_list(tokens)
 
 if __name__ == "__main__":
     main()
