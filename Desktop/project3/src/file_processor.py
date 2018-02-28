@@ -91,7 +91,7 @@ def main():
 	parser.add_argument('-o', '--output_file', type=str, help='Name of output file for the index table')
 	args = parser.parse_args()
 
-	tester = file_processor(args.input_file, '0/6', args.output_file)
+	tester = file_processor(args.input_file, '0/9', args.output_file)
 	title, body = tester.split_body_title()
 	tokens = tester.tokenizer(body)
 	index_dict = tester.aggregate_pos_list(tokens)
