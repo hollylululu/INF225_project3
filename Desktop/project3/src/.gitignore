@@ -6,3 +6,4 @@
 *.sh~
 *.r~
 *.log
+*.DS_Store

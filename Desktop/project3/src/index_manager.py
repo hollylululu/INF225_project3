@@ -16,7 +16,7 @@ class index_manager(object):
 
 	def distribute_task (self, inDir, outFile):
 		if self.numWorkers == 1:
-			inFile = [inFile]
+			inDir = [inDir]
 		else:
 
 
