@@ -9,8 +9,6 @@ class file_processor:
 		self.body = ''
 		self.filePath = filePath
 
-	def printer (self):
-		print self.docID
 
 	def split_body_title (self):
 		res_str = ''
@@ -30,6 +28,8 @@ class file_processor:
 		return self.title, self.body
 
 #return list of tuples: [(pos, word1), (pos, word2), (pos, word1), (pos, word3).....]
+#one word may appear multiple times - pass it to aggregate_pos_list to handle
+
 	def tokenizer(self, inStr):
 		import nltk
 		import string
@@ -58,10 +58,12 @@ class file_processor:
 
 	def aggregate_pos_list (self, counter_list):
 		for tup in counter_list:
+			doc_dict = {}
 			if tup[1] not in self.pos_inverted_index:
-				self.pos_inverted_index[tup[1]] = [{self.docID: [tup[0]]
+				doc_dict[self.docID] = [tup[0]]
+				self.pos_inverted_index[tup[1]] = doc_dict
 			else:
-				self.pos_inverted_index[tup[1]].append(tup[0])
+				self.pos_inverted_index[tup[1]][self.docID].append(tup[0])
 		return self.pos_inverted_index
 
 
@@ -69,15 +71,6 @@ class file_processor:
 
 
 
-		
-"""
-
-	def computeWordFrequencies(self, tokens):
-		import collections
-		from collections import OrderedDict
-		from collections import Counter
-		return dict(collections.Counter(tokens))
-"""
 
 import argparse
 
@@ -88,13 +81,12 @@ def main():
 	args = parser.parse_args()
 
 	tester = file_processor(args.input_file)
-	tester.printer()
-	#title, body = tester.split_body_title()
-	#tokens = tester.tokenizer(body)
+	title, body = tester.split_body_title()
+	tokens = tester.tokenizer(body)
 	#print tokens
 	#print tester.computeWordFrequencies(tokens)
 
-	#print tester.aggregate_pos_list(tokens)
+	print tester.aggregate_pos_list(tokens)
 
 if __name__ == "__main__":
     main()
