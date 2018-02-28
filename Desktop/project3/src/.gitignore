@@ -1,0 +1,8 @@
+*.png
+*.jpg
+*.gif
+*.pyc
+*.py~
+*.sh~
+*.r~
+*.log
