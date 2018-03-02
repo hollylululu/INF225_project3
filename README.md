@@ -7,4 +7,5 @@ To run the simple search engine:
 
 Note: the actual search function has not been implemented yet. Hitting the submit button returns nothing....
 
-
+Reference
+1. http://www.ardendertat.com/2011/05/30/how-to-implement-a-search-engine-part-1-create-index/
